@@ -99,11 +99,10 @@ $(document).ready(function () {
 //Create click event to save textarea input
     $(saveButton).on('click', function (event) {
       event.preventDefault();
-      let textareaInput = $(this).siblings(hourDesc).val();
-      let parentTimeBlock = $(this).parent().attr('id');
+      let textareaInput = JSON.stringify($(this).siblings(hourDesc).val());
+      let parentTimeBlock = JSON.stringify($(this).parent().attr('id'));
       localStorage.setItem(parentTimeBlock, textareaInput);
-      console.log(hourDesc.val())
-      console.log(localStorage);
+   
     })
   
   }
