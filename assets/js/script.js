@@ -1,25 +1,4 @@
-// GIVEN I am using a daily planner to create a schedule
-// WHEN I open the planner
-// THEN the current day is displayed at the top of the calendar
 
-// WHEN I scroll down
-// THEN I am presented with timeblocks for standard business hours
-//TODO
-//2. Variable for timeblocks
-//3. Create timeblocks
-//3a. Assign each timeblock a moment()
-//3b. Append timeblocks to container div
-
-// WHEN I view the timeblocks for that day
-// THEN each timeblock is color coded to indicate whether it is in the past, present, or future
-//TODO
-//4. Variables for current timeblock state
-//4a. Designate color for timeblock < current time
-//4b. Color for timeblock = current time
-//4c. Color for timeblock > current time
-// WHEN I click into a timeblock
-// THEN I can enter an event
-//TODO
 //5. onClick event to turn area into textbox
 // WHEN I click the save button for that timeblock
 // THEN the text for that event is saved in local storage
@@ -31,8 +10,6 @@
 //TODO
 //7. Write a JSON.parse statement to retrieve object upon load
 //7a. obj = JSON.parse(localStorage.yourObject || "{}");
-
-//current Date + Time
 
 //Functions
 
@@ -46,67 +23,88 @@ $(document).ready(function () {
   let today = moment().format("dddd, MMMM DD, YYYY");
   $(currentDay).text(today);
 
-//NOT SURE I NEED THIS
-  let nowHour24 = moment().format('H');
-  console.log(nowHour24);
-  let nowHour12 = moment().format('h');
-  console.log(nowHour12);
+  //Define hour formats
+  let now24Hr = moment().format("H");
+  let now12Hr = moment().format("h");
 
-  //Start and end of day
-let startWorkDay = 9; // 9AM
-let endWorkDay = 17; // 5PM
+  //Define start and end of day
+//   let startWorkDay = 9; // 9AM
+//   let endWorkDay = 17; // 5PM
 
   for (let time = 9; time < 18; time++) {
-
-    
     //Offset the index for moe accurate iteration
     let index = time - 9;
-    
 
     //Create time block rows
     let hourRow = $("<div>");
     $(hourRow).addClass("row timeBlock");
+    $(hourRow).attr("id", "hour-" + time);
 
     $(scheduleContainer).append(hourRow);
 
     //Create div for editable timeblock area
     let hourTextArea = $("<div>");
-    $(hourTextArea).addClass("col");
-//Add a textarea element on the editable area
+    $(hourTextArea).addClass("col description");
+    //Add a textarea element on the editable area
     let hourDesc = $("<textarea>");
+
     hourTextArea.append(hourDesc);
 
     //Create the save button
     let saveButton = $("<div>");
     $(saveButton).addClass("col-2 col-md-1 saveBtn");
     $(saveButton).html('<i class="fas fa-2x fa-save"></i>');
-  
+
     //Create hour display element
-let hourDisplay = $('<div>');
-$(hourDisplay).addClass("hour col-2 col-md-1");
+    let hourDisplay = $("<div>");
+    $(hourDisplay).addClass("hour col-2 col-md-1");
 
     //Create hour display format condition
     let hourInfo = 0;
-    let amPm = '';
+    let amPm = "";
 
-if (time > 12) {
-    hourInfo = time - 12;
-    amPm = 'PM';
-} else {
-    hourInfo = time;
-    amPm = 'AM';
-}
+    if (time > 12) {
+      hourInfo = time - 12;
+      amPm = "PM";
+    } else {
+      hourInfo = time;
+      amPm = "AM";
+    }
 
+    //Populate hourDisplay with hourInfo
+    hourDisplay.text(hourInfo + amPm);
 
-//Populate hourDisplay with hourInfo
-hourDisplay.text(hourInfo + amPm);
-
-
-
+    //Add time display, text area, and save button to each hour block
     hourRow.append(hourDisplay, hourTextArea, saveButton);
 
-  
+    console.log(now12Hr, now24Hr, hourInfo, time);
 
+    colorCodeRow(hourTextArea, time);
+
+    function colorCodeRow(hourTextArea, time) {
+      if (time < now24Hr) {
+        $(hourTextArea).addClass("past");
+        console.log("past");
+      } else if (time > now24Hr) {
+        $(hourTextArea).addClass("future");
+        console.log("futureTwo");
+      } else {
+        $(hourTextArea).addClass("present");
+        console.log("presentTwo");
+      }
+    }
+
+    //Save entered text when "save" icon is clicked
+
+//Create click event to save textarea input
+    $(saveButton).on('click', function (event) {
+      event.preventDefault();
+      let textareaInput = $(this).siblings(hourDesc).val();
+      let parentTimeBlock = $(this).parent().attr('id');
+      localStorage.setItem(parentTimeBlock, textareaInput);
+      console.log(hourDesc.val())
+      console.log(localStorage);
+    })
+  
   }
 });
-
