@@ -59,6 +59,8 @@ let endWorkDay = 17; // 5PM
   for (let time = 9; time < 18; time++) {
 
     
+    //Offset the index for moe accurate iteration
+    let index = time - 9;
     
 
     //Create time block rows
@@ -78,42 +80,33 @@ let endWorkDay = 17; // 5PM
     let saveButton = $("<div>");
     $(saveButton).addClass("col-2 col-md-1 saveBtn");
     $(saveButton).html('<i class="fas fa-2x fa-save"></i>');
+  
+    //Create hour display element
+let hourDisplay = $('<div>');
+$(hourDisplay).addClass("hour col-2 col-md-1");
 
-    //Create 
-    let hourInfo = ($("<div>").classList =
-    "hour col-2 col-md-1");
+    //Create hour display format condition
+    let hourInfo = 0;
+    let amPm = '';
 
-    // $(hourInfo).text([i].value);
-    // console.log(hour[i]);
+if (time > 12) {
+    hourInfo = time - 12;
+    amPm = 'PM';
+} else {
+    hourInfo = time;
+    amPm = 'AM';
+}
 
-    hourRow.append(hourTextArea, saveButton);
+
+//Populate hourDisplay with hourInfo
+hourDisplay.text(hourInfo + amPm);
+
+
+
+    hourRow.append(hourDisplay, hourTextArea, saveButton);
 
   
 
-    // let  = document.createTextNode([i]);
-
-    // timeBlockArea.insertBefore(hourBlock, timeBlockArea.childNodes[2]);
-    // // console.log(childToAppend);
-    // // timeSlot.appendChild(childToAppend);
-    // console.log(timeBlockArea[1]);
   }
 });
-/*
-timeblocks.forEach(appendBlock);
 
-function appendBlock() {
-    
-  $(timeBlockArea).append('<div class="timeblock"></div>')
- console.log(timeBlockArea)
-
-};
-   
-})
-/*
-
-timeSlot.forEach(console.log("time: " + now.hour()));
-
-while (now.hour()) {
-    $(timeSlot).addClass("present");
-}
-*/
