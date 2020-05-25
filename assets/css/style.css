@@ -29,6 +29,10 @@ textarea {
   padding: 0;
 }
 
+.in-focus {
+background-color: azure;
+}
+
 .time-block {
   text-align: center;
   border-radius: 15px;
