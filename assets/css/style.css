@@ -81,8 +81,12 @@ background-color: azure;
   align-items: center;
 }
 
-.saveBtn i:hover {
-  font-size: 20px;
+
+.saveBtn:hover {
+  /* Change cursor display on mouseover */
+  cursor: pointer;
+  /* Make save icon react when mouse hovers over the whole saveBtn div */
+  font-size: 10px;
   transition: all 0.3s ease-in-out;
- 
 }
+
