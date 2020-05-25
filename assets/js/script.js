@@ -1,18 +1,3 @@
-
-//5. onClick event to turn area into textbox
-// WHEN I click the save button for that timeblock
-// THEN the text for that event is saved in local storage
-//TODO
-//6. Add localStorage statement using stringify
-//6a. localStorage.yourObject = JSON.stringify(obj); ...to store object
-// WHEN I refresh the page
-// THEN the saved events persist
-//TODO
-//7. Write a JSON.parse statement to retrieve object upon load
-//7a. obj = JSON.parse(localStorage.yourObject || "{}");
-
-//Functions
-
 $(document).ready(function () {
   //Declare DOM Variables
   let currentDay = document.getElementById("current-day");
@@ -27,10 +12,6 @@ $(document).ready(function () {
   let now24Hr = moment().format("H");
   let now12Hr = moment().format("h");
 
-  //Define start and end of day
-//   let startWorkDay = 9; // 9AM
-//   let endWorkDay = 17; // 5PM
-
   for (let time = 9; time < 18; time++) {
     //Offset the index for moe accurate iteration
     let index = time - 9;
@@ -40,19 +21,33 @@ $(document).ready(function () {
     $(hourRow).addClass("row timeBlock");
     $(hourRow).attr("id", "hour-" + time);
 
+    //Attach hour rows to the workday container
     $(scheduleContainer).append(hourRow);
 
     //Create div for editable timeblock area
     let hourTextArea = $("<div>");
     $(hourTextArea).addClass("col description");
     //Add a textarea element on the editable area
-    let hourDesc = $("<textarea>");
+    let textBox = $("<textarea>");
+    $(textBox).attr("id", "hour-" + time + "-desc");
 
-    hourTextArea.append(hourDesc);
+    //Change textarea background color when in focus fore more user-friendly interface
+    $(textBox).on({
+      focus: function () {
+        $(this).addClass("in-focus");
+      },
+      focusout: function () {
+        $(this).removeClass("in-focus");
+      },
+    });
+
+    //Attach textarea to the parent div
+    hourTextArea.append(textBox);
 
     //Create the save button
     let saveButton = $("<div>");
     $(saveButton).addClass("col-2 col-md-1 saveBtn");
+    $(saveButton).attr("id", "hour-" + time + "-saveBtn");
     $(saveButton).html('<i class="fas fa-2x fa-save"></i>');
 
     //Create hour display element
@@ -77,33 +72,28 @@ $(document).ready(function () {
     //Add time display, text area, and save button to each hour block
     hourRow.append(hourDisplay, hourTextArea, saveButton);
 
-    console.log(now12Hr, now24Hr, hourInfo, time);
-
     colorCodeRow(hourTextArea, time);
 
     function colorCodeRow(hourTextArea, time) {
       if (time < now24Hr) {
         $(hourTextArea).addClass("past");
-        console.log("past");
       } else if (time > now24Hr) {
         $(hourTextArea).addClass("future");
-        console.log("futureTwo");
       } else {
         $(hourTextArea).addClass("present");
-        console.log("presentTwo");
       }
     }
 
-    //Save entered text when "save" icon is clicked
+    //Create click event to save textarea input
+    $(saveButton).on("click", function () {
+      let textareaData = $(this).siblings(".description").children().val();
+      let hourIndex = $(this).parent().attr("id");
+      localStorage.setItem(hourIndex, textareaData);
+    });
 
-//Create click event to save textarea input
-    $(saveButton).on('click', function (event) {
-      event.preventDefault();
-      let textareaInput = JSON.stringify($(this).siblings(hourDesc).val());
-      let parentTimeBlock = JSON.stringify($(this).parent().attr('id'));
-      localStorage.setItem(parentTimeBlock, textareaInput);
-   
-    })
-  
+    //Retrieve and display last saved text
+    if (localStorage.getItem("hour-" + time) != null) {
+      textBox.text(localStorage.getItem("hour-" + time));
+    }
   }
 });
